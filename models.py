@@ -58,7 +58,6 @@ class TrekAssignment(db.Model):
     staff_id = db.Column(db.Integer,db.ForeignKey("staff.staff_id"),nullable=False)
     trek_id = db.Column(db.Integer,db.ForeignKey("treks.trek_id"),nullable=False)
     assigned_date = db.Column(db.DateTime,default=datetime.now)
-
 #Booking
 class Booking(db.Model):
     __tablename__ = "bookings"
