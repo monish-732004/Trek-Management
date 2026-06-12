@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Login - Trek Management System
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-5 col-lg-4">
+        <!-- Brand/Logo area -->
+        <div class="text-center mb-4">
+            <span class="fs-1">🛠️</span>
+            <h3 class="fw-bold text-dark mt-2">Control Center</h3>
+            <p class="text-muted">Administrator Authentication Gateway</p>
+        </div>
+
+        <div class="card border-0 shadow rounded-4 overflow-hidden">
+            <!-- Decorative colored bar -->
+            <div style="height: 5px; background: linear-gradient(90deg, #212529, #343a40);"></div>
+            <div class="card-body p-4 p-md-5">
+                <form method="POST">
+                    <!-- Username -->
+                    <div class="mb-4">
+                        <label for="username" class="form-label fw-semibold text-secondary">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form-control bg-light border-start-0 ps-0"
+                                placeholder="Enter admin username"
+                                required
+                                autofocus
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold text-secondary">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control bg-light border-start-0 ps-0"
+                                placeholder="Enter password"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        class="btn btn-dark btn-lg w-100 py-3 rounded-pill fw-bold shadow-sm"
+                    >
+                        Sign In as Admin
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Support Links / Return Home -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-link text-decoration-none text-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> User Portal Login
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

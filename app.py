@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from models import db, Admin, Trek
 from routes.auth import auth
 from routes.user import user
+from routes.admin import admin
 
 app = Flask(__name__)
 
@@ -52,6 +53,7 @@ print("Database created successfully!")
 
 app.register_blueprint(auth)
 app.register_blueprint(user)
+app.register_blueprint(admin)
 
 
 if __name__ == "__main__":
