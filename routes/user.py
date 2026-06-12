@@ -1,7 +1,22 @@
-from flask import Blueprint, redirect, url_for, flash, session
+from flask import Blueprint, redirect, url_for, flash, session, render_template
 from models import db, Trek, Booking, User
 
 user = Blueprint("user", __name__)
+
+@user.route("/my-bookings")
+def my_bookings():
+    if "user_id" not in session or session.get("role") != "user":
+        flash("Please login first.")
+        return redirect(url_for("auth.login"))
+
+    user_id = session["user_id"]
+    bookings = (
+        Booking.query
+        .filter_by(user_id=user_id)
+        .order_by(Booking.booking_date.desc())
+        .all()
+    )
+    return render_template("user/my_bookings.html", bookings=bookings)
 
 @user.route("/book/<int:trek_id>")
 def book_trek(trek_id):
@@ -52,3 +67,17 @@ def book_trek(trek_id):
         print(f"Error booking trek: {e}")
 
     return redirect(url_for("auth.user_dashboard"))
+
+@user.route("/trek/<int:trek_id>")
+def trek_detail(trek_id):
+    if "user_id" not in session or session.get("role") != "user":
+        flash("Please login first.")
+        return redirect(url_for("auth.login"))
+
+    trek = Trek.query.get(trek_id)
+    if not trek:
+        flash("Trek not found.")
+        return redirect(url_for("auth.user_dashboard"))
+
+    return render_template("user/trek_detail.html", trek=trek)
+

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Bookings - Trek Management System
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-dark mb-1">My Bookings</h2>
+            <p class="text-muted">Track your reserved treks and upcoming adventures</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{{ url_for('auth.user_dashboard') }}" class="btn btn-outline-primary shadow-sm">
+                <i class="bi bi-compass me-1"></i> Explore More Treks
+            </a>
+        </div>
+    </div>
+
+    <!-- Bookings Content -->
+    {% if bookings %}
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" class="py-3 px-4">Booking ID</th>
+                                <th scope="col" class="py-3">Trek Name</th>
+                                <th scope="col" class="py-3">Location</th>
+                                <th scope="col" class="py-3">Start Date</th>
+                                <th scope="col" class="py-3">End Date</th>
+                                <th scope="col" class="py-3">Booking Date</th>
+                                <th scope="col" class="py-3">Status</th>
+                                <th scope="col" class="py-3 text-center px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                                <tr>
+                                    <td class="fw-semibold px-4 text-muted">#{{ booking.booking_id }}</td>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ booking.trek.trek_name }}</div>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">
+                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ booking.trek.location or 'N/A' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-medium text-secondary">
+                                            {{ booking.trek.start_date.strftime('%b %d, %Y') if booking.trek.start_date else 'N/A' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-medium text-secondary">
+                                            {{ booking.trek.end_date.strftime('%b %d, %Y') if booking.trek.end_date else 'N/A' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            {{ booking.booking_date.strftime('%b %d, %Y %I:%M %p') if booking.booking_date else 'N/A' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if booking.status == 'Booked' %}
+                                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">Booked</span>
+                                        {% elif booking.status == 'Cancelled' %}
+                                            <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">Cancelled</span>
+                                        {% elif booking.status == 'Completed' %}
+                                            <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle px-3 py-2">Completed</span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2">{{ booking.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center px-4">
+                                        <a href="{{ url_for('user.trek_detail', trek_id=booking.trek_id) }}" class="btn btn-sm btn-primary px-3 rounded-pill shadow-sm">
+                                            View Trek Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-light">
+            <div class="py-5">
+                <div class="mb-4">
+                    <span class="display-1 text-muted">🏕️</span>
+                </div>
+                <h3 class="fw-bold text-dark">No bookings found</h3>
+                <p class="text-muted max-width-md mx-auto mb-4">You haven't booked any treks yet. Let's find your first adventure!</p>
+                <a href="{{ url_for('auth.user_dashboard') }}" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm">
+                    Browse Available Treks
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

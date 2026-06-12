@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ trek.trek_name }} - Details
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back Navigation -->
+    <div class="mb-4">
+        <a href="{{ url_for('auth.user_dashboard') }}" class="btn btn-link text-decoration-none p-0 me-3 text-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+        <span class="text-muted">|</span>
+        <a href="{{ url_for('user.my_bookings') }}" class="btn btn-link text-decoration-none p-0 ms-3 text-secondary">
+            My Bookings
+        </a>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="row">
+        <!-- Details Column -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                    <div>
+                        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-2">
+                            {{ trek.difficulty }} Difficulty
+                        </span>
+                        <h1 class="fw-bold text-dark mb-0">{{ trek.trek_name }}</h1>
+                    </div>
+                    <div class="text-lg-end">
+                        <span class="fs-4 fw-bold text-dark d-block">{{ trek.duration_days }} Days</span>
+                        <span class="text-muted small">Duration</span>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                            <span class="fs-2 me-3">📍</span>
+                            <div>
+                                <small class="text-muted d-block">Location</small>
+                                <strong class="text-dark">{{ trek.location or 'N/A' }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                            <span class="fs-2 me-3">📅</span>
+                            <div>
+                                <small class="text-muted d-block">Dates</small>
+                                <strong class="text-dark">
+                                    {{ trek.start_date.strftime('%b %d, %Y') if trek.start_date else 'N/A' }} 
+                                    to 
+                                    {{ trek.end_date.strftime('%b %d, %Y') if trek.end_date else 'N/A' }}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4 text-muted opacity-25">
+
+                <h4 class="fw-bold text-dark mb-3">Trek Overview</h4>
+                <p class="text-secondary leading-relaxed mb-4">
+                    {{ trek.description or 'No description provided for this trek.' }}
+                </p>
+
+                <hr class="my-4 text-muted opacity-25">
+
+                <div class="d-flex align-items-center justify-content-between p-3 border border-light rounded-3 bg-light-subtle">
+                    <div>
+                        <strong class="text-dark">Booking Status:</strong>
+                        {% if trek.status == 'Open' %}
+                            <span class="badge bg-success-subtle text-success ms-2 px-3 py-1 rounded-pill">Open for Bookings</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning ms-2 px-3 py-1 rounded-pill">{{ trek.status }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong class="text-dark">Available Slots:</strong>
+                        <span class="badge bg-dark ms-2 px-3 py-1 rounded-pill">{{ trek.available_slots }} left</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action Sidebar -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 100px; z-index: 10;">
+                <h4 class="fw-bold text-dark mb-3">Reserve Your Spot</h4>
+                <p class="text-muted small mb-4">Secure your placement on this trek today. Spot confirmation is instant.</p>
+
+                {% if trek.status == 'Open' and trek.available_slots > 0 %}
+                    <a href="{{ url_for('user.book_trek', trek_id=trek.trek_id) }}" class="btn btn-primary btn-lg w-100 py-3 rounded-pill shadow mb-3">
+                        Book Now
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary btn-lg w-100 py-3 rounded-pill cursor-not-allowed mb-3" disabled>
+                        {% if trek.available_slots <= 0 %}
+                            Fully Booked
+                        {% else %}
+                            Booking Closed
+                        {% endif %}
+                    </button>
+                {% endif %}
+
+                <div class="text-center">
+                    <small class="text-muted">Need help? Contact support or staff.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
