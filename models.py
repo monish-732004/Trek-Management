@@ -10,6 +10,9 @@ class Admin(db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(500), nullable=False)
     email = db.Column(db.String(200), unique=True)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 #user
 class User(db.Model):
     __tablename__ = "users"
@@ -25,6 +28,9 @@ class User(db.Model):
     created_at = db.Column(db.DateTime,default=datetime.now)
     bookings = db.relationship("Booking",back_populates="user",lazy=True)
     reviews = db.relationship("Review",back_populates="user",lazy=True)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 #Staff
 class Staff(db.Model):
     __tablename__ = "staff"
@@ -51,6 +57,9 @@ class Trek(db.Model):
     status = db.Column(db.String(30), default="Pending")
     bookings = db.relationship("Booking",back_populates="trek",lazy=True)
     reviews = db.relationship("Review",back_populates="trek",lazy=True)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 #Trek
 class TrekAssignment(db.Model):
     __tablename__ = "trek_assignments"

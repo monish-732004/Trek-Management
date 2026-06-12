@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, url_for, flash, session
-from models import db, Trek, Booking
+from models import db, Trek, Booking, User
 
 user = Blueprint("user", __name__)
 
