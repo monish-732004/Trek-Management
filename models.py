@@ -68,6 +68,9 @@ class Booking(db.Model):
     status = db.Column(db.String(20),default="Booked")
     user = db.relationship("User",back_populates="bookings")
     trek = db.relationship("Trek",back_populates="bookings")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 #Review
 class Review(db.Model):
     __tablename__ = "reviews"

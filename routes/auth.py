@@ -2,6 +2,16 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from models import db, User
 from werkzeug.security import check_password_hash
+from models import db, User, Trek
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    session
+)
 
 auth = Blueprint("auth", __name__)
 
@@ -15,9 +25,7 @@ def register_user():
         password = request.form["password"]
         phone = request.form["phone"]
         emergency_contact = request.form["emergency_contact"]
-
         age_input = request.form["age"]
-
         # Check if email already exists
         existing_user = User.query.filter_by(email=email).one_or_none()
 
@@ -74,20 +82,78 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(
+            email=email
+        ).first()
 
         if not user:
-            flash("User not found")
-            return redirect(url_for("auth.login"))
+            flash("User havent registered yet!! Register Please")
+            return redirect(
+                url_for("auth.login")
+            )
 
-        if not check_password_hash(user.password, password):
-            flash("Incorrect password")
-            return redirect(url_for("auth.login"))
+        if user.status == "Blacklisted":
+            flash("Your account has been blacklisted")
+            return redirect(
+                url_for("auth.login")
+            )
 
-        flash(f"Welcome {user.name}")
-        return "Login Successful"
+        if not check_password_hash(
+            user.password,
+            password
+        ):
+            flash(" Wrong password")
+            return redirect(
+                url_for("auth.login")
+            )
 
-    return render_template("auth/login.html")
+        session["user_id"] = user.user_id
+        session["user_name"] = user.name
+        session["role"] = "user"
 
+        flash("Login Successful")
 
-    return render_template("auth/login.html")
+        treks = Trek.query.filter_by(
+            status="Open"
+        ).all()
+
+        return render_template(
+            "user/dashboard.html",
+            name=user.name,
+            treks=treks
+        )
+
+    return render_template(
+        "auth/login.html"
+    )
+
+@auth.route("/dashboard")
+def user_dashboard():
+
+    if "user_id" not in session:
+
+        flash("Please login first")
+
+        return redirect(
+            url_for("auth.login")
+        )
+
+    treks = Trek.query.filter_by(
+        status="Open"
+    ).all()
+
+    return render_template(
+        "user/dashboard.html",
+        name=session["user_name"],
+        treks=treks
+    )
+@auth.route("/logout")
+def logout():
+
+    session.clear()
+
+    flash("Logged out successfully")
+
+    return redirect(
+        url_for("auth.login")
+    )
