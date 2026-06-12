@@ -43,7 +43,17 @@
                 {% if session.get('role') == 'admin' %}
                     <li class="nav-item">
                         <a class="nav-link px-3" href="{{ url_for('admin.dashboard') }}">
-                            <i class="bi bi-shield-lock me-1"></i>Admin Dashboard
+                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{{ url_for('admin.view_treks') }}">
+                            <i class="bi bi-map me-1"></i>Treks
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{{ url_for('admin.add_trek') }}">
+                            <i class="bi bi-plus-circle me-1"></i>Add Trek
                         </a>
                     </li>
                     <li class="nav-item ms-2">

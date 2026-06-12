@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Trek - Admin Panel
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb/Back link -->
+    <div class="mb-3">
+        <a href="{{ url_for('admin.view_treks') }}" class="text-decoration-none text-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Treks List
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <!-- Top Accent Line -->
+                <div style="height: 5px; background: linear-gradient(90deg, #212529, #343a40);"></div>
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="fw-bold text-dark mb-4">Edit Trek</h2>
+
+                    <form method="POST">
+                        <!-- Trek Name -->
+                        <div class="mb-3">
+                            <label for="trek_name" class="form-label fw-semibold text-secondary">Trek Name</label>
+                            <input
+                                type="text"
+                                id="trek_name"
+                                name="trek_name"
+                                class="form-control"
+                                value="{{ trek.trek_name }}"
+                                required
+                            >
+                        </div>
+
+                        <div class="row">
+                            <!-- Location -->
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label fw-semibold text-secondary">Location</label>
+                                <input
+                                    type="text"
+                                    id="location"
+                                    name="location"
+                                    class="form-control"
+                                    value="{{ trek.location or '' }}"
+                                    required
+                                >
+                            </div>
+                            
+                            <!-- Difficulty -->
+                            <div class="col-md-6 mb-3">
+                                <label for="difficulty" class="form-label fw-semibold text-secondary">Difficulty</label>
+                                <select id="difficulty" name="difficulty" class="form-select" required>
+                                    <option value="Easy" {% if trek.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                                    <option value="Moderate" {% if trek.difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
+                                    <option value="Hard" {% if trek.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Duration -->
+                            <div class="col-md-6 mb-3">
+                                <label for="duration_days" class="form-label fw-semibold text-secondary">Duration (Days)</label>
+                                <input
+                                    type="number"
+                                    id="duration_days"
+                                    name="duration_days"
+                                    min="1"
+                                    class="form-control"
+                                    value="{{ trek.duration_days }}"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Slots -->
+                            <div class="col-md-6 mb-3">
+                                <label for="available_slots" class="form-label fw-semibold text-secondary">Available Slots</label>
+                                <input
+                                    type="number"
+                                    id="available_slots"
+                                    name="available_slots"
+                                    min="1"
+                                    class="form-control"
+                                    value="{{ trek.available_slots }}"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Start Date -->
+                            <div class="col-md-6 mb-3">
+                                <label for="start_date" class="form-label fw-semibold text-secondary">Start Date</label>
+                                <input
+                                    type="date"
+                                    id="start_date"
+                                    name="start_date"
+                                    class="form-control"
+                                    value="{{ trek.start_date.strftime('%Y-%m-%d') if trek.start_date else '' }}"
+                                    required
+                                >
+                            </div>
+
+                            <!-- End Date -->
+                            <div class="col-md-6 mb-3">
+                                <label for="end_date" class="form-label fw-semibold text-secondary">End Date</label>
+                                <input
+                                    type="date"
+                                    id="end_date"
+                                    name="end_date"
+                                    class="form-control"
+                                    value="{{ trek.end_date.strftime('%Y-%m-%d') if trek.end_date else '' }}"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="mb-3">
+                            <label for="status" class="form-label fw-semibold text-secondary">Status</label>
+                            <select id="status" name="status" class="form-select" required>
+                                <option value="Pending" {% if trek.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="Open" {% if trek.status == 'Open' %}selected{% endif %}>Open</option>
+                                <option value="Closed" {% if trek.status == 'Closed' %}selected{% endif %}>Closed</option>
+                            </select>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label fw-semibold text-secondary">Description</label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                rows="4"
+                                class="form-control"
+                            >{{ trek.description or '' }}</textarea>
+                        </div>
+
+                        <!-- Submit and Reset -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('admin.view_treks') }}" class="btn btn-outline-secondary px-4 rounded-pill">Cancel</a>
+                            <button type="submit" class="btn btn-dark px-4 rounded-pill">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
