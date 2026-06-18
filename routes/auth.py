@@ -72,8 +72,6 @@ def register_user():
 
     return render_template("auth/user_register.html")
 
-from werkzeug.security import check_password_hash
-
 @auth.route("/login", methods=["GET", "POST"])
 def login():
 

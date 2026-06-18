@@ -101,6 +101,10 @@ def add_trek():
             return redirect(url_for("admin.add_trek"))
 
         # Validation checks
+        if not trek_name or not trek_name.strip():
+            flash("Trek name cannot be empty.")
+            return redirect(url_for("admin.add_trek"))
+
         if available_slots <= 0:
             flash("Available slots must be greater than 0.")
             return redirect(url_for("admin.add_trek"))
@@ -146,40 +150,55 @@ def edit_trek(trek_id):
         return redirect(url_for("admin.view_treks"))
 
     if request.method == "POST":
-        trek.trek_name = request.form.get("trek_name")
-        trek.location = request.form.get("location")
-        trek.difficulty = request.form.get("difficulty")
+        trek_name = request.form.get("trek_name")
+        location = request.form.get("location")
+        difficulty = request.form.get("difficulty")
         duration_days_str = request.form.get("duration_days")
         available_slots_str = request.form.get("available_slots")
         start_date_str = request.form.get("start_date")
         end_date_str = request.form.get("end_date")
-        trek.description = request.form.get("description")
-        trek.status = request.form.get("status")
+        description = request.form.get("description")
+        status = request.form.get("status")
+
+        # Validation checks
+        if not trek_name or not trek_name.strip():
+            flash("Trek name cannot be empty.")
+            return redirect(url_for("admin.edit_trek", trek_id=trek_id))
 
         # Parsing numbers
         try:
-            trek.duration_days = int(duration_days_str)
-            trek.available_slots = int(available_slots_str)
+            duration_days = int(duration_days_str)
+            available_slots = int(available_slots_str)
         except (ValueError, TypeError):
             flash("Duration and Available Slots must be valid integers.")
             return redirect(url_for("admin.edit_trek", trek_id=trek_id))
 
         # Parse dates
         try:
-            trek.start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-            trek.end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
         except (ValueError, TypeError):
             flash("Dates must be in YYYY-MM-DD format.")
             return redirect(url_for("admin.edit_trek", trek_id=trek_id))
 
-        # Validation checks
-        if trek.available_slots <= 0:
+        if available_slots <= 0:
             flash("Available slots must be greater than 0.")
             return redirect(url_for("admin.edit_trek", trek_id=trek_id))
 
-        if trek.end_date <= trek.start_date:
+        if end_date <= start_date:
             flash("End date must be after start date.")
             return redirect(url_for("admin.edit_trek", trek_id=trek_id))
+
+        # Update trek details
+        trek.trek_name = trek_name
+        trek.location = location
+        trek.difficulty = difficulty
+        trek.duration_days = duration_days
+        trek.available_slots = available_slots
+        trek.start_date = start_date
+        trek.end_date = end_date
+        trek.description = description
+        trek.status = status
 
         try:
             db.session.commit()
@@ -193,7 +212,7 @@ def edit_trek(trek_id):
 
     return render_template("admin/edit_trek.html", trek=trek)
 
-@admin.route("/trek/delete/<int:trek_id>", methods=["POST"])
+@admin.route("/trek/delete/<int:trek_id>", methods=["GET", "POST"])
 def delete_trek(trek_id):
     if not verify_admin():
         flash("Please login first")
